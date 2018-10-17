@@ -21,20 +21,22 @@ namespace MsgPackConsole
             Console.WriteLine("MessagePack Nuget");
             Console.WriteLine("Author: Visionary S.A.S.\n");
 
-            var sample = GetOnlineRecord();
-            Console.WriteLine($"Object: {sample}\n");
+            var objectSample = GetOnlineRecord();
+            Console.WriteLine($"Object: {objectSample}\n");
 
-            var bytes = MessagePackSerializer.Serialize(sample);
-            Console.WriteLine($"Packed, bytes: {bytes.Length}");
+            var pack = MessagePackSerializer.Serialize(objectSample);
+            Console.WriteLine($"Packed, bytes: {pack.Length}");
 
-            var js = JsonConvert.SerializeObject(sample);
+            var js = JsonConvert.SerializeObject(objectSample);
             Console.WriteLine($"Pure JSON: {js.Length}");
 
-            var retrivedSample = MessagePackSerializer.Deserialize<OnlineRecord>(bytes);
-            Console.WriteLine($"Unpacked: {retrivedSample}");
+            var unpack = MessagePackSerializer.Deserialize<OnlineRecord>(pack);
+            Console.WriteLine($"Unpacked: {unpack}");
 
-            var jsArray = JsonConvert.SerializeObject(bytes);
-            Console.WriteLine($"\nObject Packed to JSON array:\n{jsArray.Length}");
+            //* Una alternativa, sin necesidad de usar un formatter
+            //* pero requiere serializar y deserializar json
+            // var jsArray = JsonConvert.SerializeObject(pack);
+            // Console.WriteLine($"\nObject Packed to JSON array:\n{jsArray.Length}");
 
             Console.Write("\n\nPause...");
             Console.ReadKey();
@@ -49,7 +51,9 @@ namespace MsgPackConsole
                 Parameters = new List<Parameter>()
             };
 
-            for (int i = 0; i < 260; i++) {
+            var parametersCount = 120;
+
+            for (int i = 0; i < parametersCount; i++) {
                 data.Parameters.Add(new Parameter { Mnemonic = RandomString(4), Value = (float)random.NextDouble() });
             };
 
@@ -59,7 +63,7 @@ namespace MsgPackConsole
             data.Parameters.ForEach(p => {
                 Console.WriteLine("  {0}", p);
             });
-
+            Console.WriteLine();
             return data;
         }
 
